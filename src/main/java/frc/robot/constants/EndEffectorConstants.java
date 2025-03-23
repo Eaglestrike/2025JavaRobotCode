@@ -30,7 +30,7 @@ public final class EndEffectorConstants {
         public final static int MOTOR_ID = 34;
 
         public final static double MAX_VOLTS = 8.0;
-        public final static double MANUAL_RATIO = 4.0;
+        public final static double MANUAL_RATIO = 1.0;
         public final static double INTAKE_CORAL_VOLTS = 5;
         public final static double INTAKE_ALGAE_VOLTS = 8.0;
         public final static double OUTTAKE_L2_L3_CORAL_VOLTS = 0.0;
@@ -42,7 +42,7 @@ public final class EndEffectorConstants {
         public final static double RETAIN_CORAL = 1.0;
         public final static double EJECT_VOLTS = -5;
 
-        public final static double STALL_CURRENT = 30;
+        public final static double STALL_CURRENT = 40;
 
     }
 }

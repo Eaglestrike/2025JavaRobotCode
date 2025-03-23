@@ -31,7 +31,7 @@ public final class IntakeConstants {
     public static class Rollers {
         public final static int MOTOR_ID = 36;
 
-        public final static double MAX_VOLTS = 4.0;
+        public final static double MAX_VOLTS = 8.0;
         public final static double MANUAL_RATIO = 1.0;
         public final static double INTAKE_CORAL_VOLTS = 8.0;
         public final static double EJECT_VOLTS = -4.0;

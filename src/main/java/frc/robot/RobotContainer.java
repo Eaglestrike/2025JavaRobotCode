@@ -89,7 +89,7 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("ScoreL4", m_superstructure.score());
         NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
-        NamedCommands.registerCommand("IntakeCoral", m_superstructure.intake());
+        NamedCommands.registerCommand("IntakeCoral", m_superstructure.intakeCoralAuto());
         NamedCommands.registerCommand("Stow", m_superstructure.stow());
         for (AutoAlignPosition pos : AutoAlignPosition.values()) {
             NamedCommands.registerCommand("AutoAlign" + pos.toString(),

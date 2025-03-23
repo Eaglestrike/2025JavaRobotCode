@@ -36,6 +36,7 @@ public class Superstructure extends SubsystemBase{
     private final Channel m_channel;
     private final ElasticSender m_elastic;
     private long lastTime = 0;
+    private long startProccesorTime = -1;
 
     //private LED m_leds = new LED();
 
@@ -111,6 +112,7 @@ public class Superstructure extends SubsystemBase{
             return GPMode.Coral;
         return gpMode;
     }
+    
     public Command intakeCoral() {
         return Commands.sequence(
                 m_elevator.moveTo(ElevatorConstants.INTAKE_HEIGHT),
@@ -124,6 +126,25 @@ public class Superstructure extends SubsystemBase{
                 Commands.parallel(m_intakeRollers.stop(), m_channel.stop(),
                         m_eeRollers.run(EndEffectorConstants.Rollers.RETAIN_CORAL)),
                 m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION));
+    }
+
+    public Command intakeCoralAuto() {
+        return new SelectCommand<>(
+            Map.ofEntries(
+                Map.entry(false, Commands.sequence(
+                    m_elevator.moveTo(ElevatorConstants.INTAKE_HEIGHT),
+                    m_eeWrist.moveTo(EndEffectorWristPosition.INTAKE_CORAL_ANGLE),
+                    m_intakeWrist.moveTo(IntakeConstants.Wrist.INTAKE_POSITION),
+                    m_intakeRollers.run(IntakeConstants.Rollers.INTAKE_CORAL_VOLTS),
+                    m_channel.run(ChannelConstants.CHANNEL_VOLTS),
+                    m_eeRollers.run(EndEffectorConstants.Rollers.INTAKE_CORAL_VOLTS),
+                    Commands.waitUntil(m_channel.coralInEndEffectorSupplier),
+                    Commands.waitSeconds(0.7),
+                    Commands.parallel(m_intakeRollers.stop(), m_channel.stop(),
+                            m_eeRollers.run(EndEffectorConstants.Rollers.RETAIN_CORAL)),
+                    m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION))),
+                Map.entry(true, new PrintCommand("Still has coral"))
+            ), m_channel.coralInEndEffectorSupplier::getAsBoolean);
     }
 
     public Command intakeAlgae() {
@@ -167,10 +188,15 @@ public class Superstructure extends SubsystemBase{
                 Map.ofEntries(
                         Map.entry(GPMode.Coral, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L1_CORAL_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L1_SCORE_ANGLE))),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.PROCESSOR_ALGAE_HEIGHT),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.INTAKE_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.SCORE_PROCESSOR_ANGLE)))),
                 this::getGPMode);
     }
@@ -180,9 +206,15 @@ public class Superstructure extends SubsystemBase{
                 Map.ofEntries(
                         Map.entry(GPMode.Coral, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L2_CORAL_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L2_PRE_ANGLE))),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L2_ALGAE_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 intakeAlgae()))),
                 this::getGPMode);
     }
@@ -192,9 +224,15 @@ public class Superstructure extends SubsystemBase{
                 Map.ofEntries(
                         Map.entry(GPMode.Coral, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L3_CORAL_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L3_PRE_ANGLE))),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L3_ALGAE_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 intakeAlgae()))),
                 this::getGPMode);
     }
@@ -204,9 +242,15 @@ public class Superstructure extends SubsystemBase{
                 Map.ofEntries(
                         Map.entry(GPMode.Coral, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L4_CORAL_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L4_PRE_ANGLE))),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.BARGE_ALGAE_HEIGHT),
+                                m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
+                                m_intakeRollers.stop(),
+                                m_channel.stop(),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.SCORE_BARGE_PRE_ANGLE)))),
                 this::getGPMode);
     }
@@ -216,6 +260,7 @@ public class Superstructure extends SubsystemBase{
             switch (m_eeWrist.getPosition()) {
                 case L1_SCORE_ANGLE:
                     m_eeRollers.runFunc(EndEffectorConstants.Rollers.OUTTAKE_L1_CORAL_VOLTS);
+                    
                     break;
                 case L2_PRE_ANGLE:
                 case L3_PRE_ANGLE:
@@ -237,7 +282,12 @@ public class Superstructure extends SubsystemBase{
         return Commands.runOnce(() -> {
             switch (m_eeWrist.getPosition()) {
                 case SCORE_PROCESSOR_ANGLE:
+                    startProccesorTime = System.currentTimeMillis();
                     m_eeRollers.runFunc(EndEffectorConstants.Rollers.OUTTAKE_PROCCESOR_VOLTS);
+                    while (System.currentTimeMillis() - startProccesorTime < 300) {
+                        continue;
+                    }
+                    m_eeRollers.runFunc(0);
                     break;
                 case SCORE_BARGE_PRE_ANGLE:
                     m_eeRollers.runFunc(EndEffectorConstants.Rollers.OUTTAKE_BARGE_VOLTS);
@@ -252,6 +302,7 @@ public class Superstructure extends SubsystemBase{
     public Command ejectIntake() {
         return Commands.sequence(
                 m_intakeWrist.moveTo(IntakeConstants.Wrist.EJECT_POSITION),
+                Commands.waitSeconds(0.3),
                 m_intakeRollers.run(IntakeConstants.Rollers.EJECT_VOLTS),
                 m_channel.run(ChannelConstants.EJECT_VOLTS));
     }
@@ -259,6 +310,7 @@ public class Superstructure extends SubsystemBase{
     public Command ejectEE() {
         return Commands.sequence(
                 m_eeWrist.moveTo(EndEffectorWristPosition.L2_PRE_ANGLE),
+                Commands.waitSeconds(0.3),
                 m_eeRollers.run(EndEffectorConstants.Rollers.EJECT_VOLTS),
                 m_elevator.moveTo(ElevatorConstants.STOWED_HEIGHT));
     }
