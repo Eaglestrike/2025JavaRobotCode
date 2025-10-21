@@ -12,6 +12,7 @@ public enum EndEffectorWristPosition {
     L2_SCORE_ANGLE(0.0),
     L3_SCORE_ANGLE(0.0),
     L4_SCORE_ANGLE(1),
+    L4_SCORE_NO_DEALGAE_ANGLE(1.6),
     INTAKE_CORAL_ANGLE(0.0), // should be the same as STOW_ANGLE
     // algae
     SCORE_BARGE_ANGLE(3),

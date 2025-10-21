@@ -34,6 +34,9 @@ import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 
+import badgerlog.annotations.Entry;
+import badgerlog.annotations.EntryType;
+
 public class EndEffectorWrist extends SubsystemBase {
 
 	private final TalonFX m_motor = new TalonFX(EndEffectorConstants.Wrist.MOTOR_ID, "rio");
@@ -41,6 +44,9 @@ public class EndEffectorWrist extends SubsystemBase {
 
 	private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
 	private boolean debug;
+
+	@Entry(EntryType.SUBSCRIBER)
+	private boolean dealgaeWhileScoring = false;
 	private ElasticSender m_elastic;
 	private EndEffectorWristPosition m_currPosition = EndEffectorWristPosition.STOW_ANGLE;
 	private EndEffectorWristSide m_currSide = EndEffectorWristSide.FRONT;
@@ -147,7 +153,7 @@ public class EndEffectorWrist extends SubsystemBase {
 				nextPosition = EndEffectorWristPosition.L3_SCORE_ANGLE;
 				break;
 			case L4_PRE_ANGLE:
-				nextPosition = EndEffectorWristPosition.L4_SCORE_ANGLE;
+				nextPosition = dealgaeWhileScoring ? EndEffectorWristPosition.L4_SCORE_ANGLE : EndEffectorWristPosition.L4_SCORE_NO_DEALGAE_ANGLE;
 				break;
 			case SCORE_PROCESSOR_ANGLE:
 			case SCORE_BARGE_ANGLE:
@@ -158,6 +164,7 @@ public class EndEffectorWrist extends SubsystemBase {
 			case L2_SCORE_ANGLE:
 			case L3_SCORE_ANGLE:
 			case L4_SCORE_ANGLE:
+			case L4_SCORE_NO_DEALGAE_ANGLE:
 				nextPosition = m_currPosition;
 				break;
 			default:
@@ -192,6 +199,17 @@ public class EndEffectorWrist extends SubsystemBase {
 
 	public EndEffectorWristPosition getPosition() {
 		return m_currPosition;
+	}
+
+	/**
+	 * Sets whether to dealgae while scoring
+	 * @param dealgae <code>true</code> to dealgae while scoring, <code>false</code> to not
+	 * @return
+	 */
+	public Command setDealgae(boolean dealgae) {
+		return runOnce(() -> {
+			this.dealgaeWhileScoring = dealgae;
+		});
 	}
 
 	@Override
