@@ -18,7 +18,6 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.ReefPositions;
 
 
 public class Robot extends LoggedRobot {
@@ -78,6 +77,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.getEEWrist().setDealgae(true).schedule();
     m_robotContainer.resetMechs();
   }
 

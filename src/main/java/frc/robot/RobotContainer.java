@@ -106,25 +106,15 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("ScoreL4", m_superstructure.score());
+        NamedCommands.registerCommand("OuttakeL4", m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS));
+        NamedCommands.registerCommand("StopRollers", m_eeRollers.fullStop());
         NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
         NamedCommands.registerCommand("IntakeCoral", m_superstructure.intake());
         NamedCommands.registerCommand("Stow", m_superstructure.stow());
         for (AutoAlignPosition pos : AutoAlignConstants.REEF_POSITIONS.keySet()) {
             NamedCommands.registerCommand("AutoAlign" + pos.toString(),
             drivetrain.alignPID(()->ReefPositions.getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
-        } 
-
-        // NamedCommands.registerCommand("ScoreL4", new PrintCommand("Score L4"));
-        // NamedCommands.registerCommand("ElevateL4", new PrintCommand("Elevate L4"));
-        // NamedCommands.registerCommand("IntakeCoral", new
-        // PrintCommand("IntakeCoral"));
-        // NamedCommands.registerCommand("Stow", new PrintCommand("Stow"));
-
-        // choreo commands
-        NamedCommands.registerCommand("Score", m_superstructure.score());
-        NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
-        NamedCommands.registerCommand("IntakeDown", m_superstructure.intake());
-        NamedCommands.registerCommand("Stow", m_superstructure.stow());
+        }
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -303,6 +293,9 @@ public class RobotContainer {
         );
     }
 
+    public EndEffectorWrist getEEWrist() {
+        return m_eeWrist;
+    }
 
     public void configureAutoAlignBindings() {
         m_buttonBoard.button(6).and(coralModeSupplier).onTrue(Commands.runOnce(() -> {
