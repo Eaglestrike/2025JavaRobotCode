@@ -77,7 +77,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.getEEWrist().setDealgae(true).schedule();
+    m_robotContainer.getEEWrist().setDealgae(true);
     m_robotContainer.resetMechs();
   }
 

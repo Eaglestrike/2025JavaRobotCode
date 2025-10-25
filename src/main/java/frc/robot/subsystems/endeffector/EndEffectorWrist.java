@@ -45,8 +45,7 @@ public class EndEffectorWrist extends SubsystemBase {
 	private final MotionMagicVoltage m_mmReq = new MotionMagicVoltage(0);
 	private boolean debug;
 
-	@Entry(EntryType.SUBSCRIBER)
-	private boolean dealgaeWhileScoring = false;
+	private boolean dealgaeWhileScoring = true;
 	private ElasticSender m_elastic;
 	private EndEffectorWristPosition m_currPosition = EndEffectorWristPosition.STOW_ANGLE;
 	private EndEffectorWristSide m_currSide = EndEffectorWristSide.FRONT;
@@ -204,12 +203,9 @@ public class EndEffectorWrist extends SubsystemBase {
 	/**
 	 * Sets whether to dealgae while scoring
 	 * @param dealgae <code>true</code> to dealgae while scoring, <code>false</code> to not
-	 * @return
 	 */
-	public Command setDealgae(boolean dealgae) {
-		return runOnce(() -> {
-			this.dealgaeWhileScoring = dealgae;
-		});
+	public void setDealgae(boolean dealgae) {
+		this.dealgaeWhileScoring = dealgae;
 	}
 
 	@Override

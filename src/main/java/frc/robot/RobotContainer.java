@@ -111,6 +111,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
         NamedCommands.registerCommand("IntakeCoral", m_superstructure.intake());
         NamedCommands.registerCommand("Stow", m_superstructure.stow());
+        NamedCommands.registerCommand("SetDealgaeFalse", Commands.runOnce(() -> m_eeWrist.setDealgae(false)));
         for (AutoAlignPosition pos : AutoAlignConstants.REEF_POSITIONS.keySet()) {
             NamedCommands.registerCommand("AutoAlign" + pos.toString(),
             drivetrain.alignPID(()->ReefPositions.getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
