@@ -41,7 +41,7 @@ public class AutoAlignConstants {
     public static final Pose2d REEF_F = new Pose2d(5.47, 2.74, EF);
     // tag 21 - revised h SIM
     public static final Pose2d REEF_G = new Pose2d(6.09, 3.81, GH); // works irl
-    public static final Pose2d REEF_H = new Pose2d(6.09, 4.18, GH); // works in sim
+    public static final Pose2d REEF_H = new Pose2d(6.09, 4.20, GH); // works in sim
     // tag 20 - revised i/j SIM
     public static final Pose2d REEF_I = new Pose2d(5.52, 5.42, IJ);
     public static final Pose2d REEF_J = new Pose2d(5.03, 5.57, IJ);

@@ -104,28 +104,41 @@
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCoral"
-                }
-              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "SweepCoral2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoral"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Station2ToReefCD"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Station2ToReefCD"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoral"
+                }
+              }
+            ]
           }
         },
         {
