@@ -34,8 +34,8 @@ public class EndEffectorSideUtils {
         System.out.println("Angle Error: " + angleError);
 
         if (angleError < Math.PI / 2.0) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

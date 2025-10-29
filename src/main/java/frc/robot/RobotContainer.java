@@ -18,6 +18,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.Drive.EagleSwerveTelemetry;
 import frc.robot.subsystems.channel.Channel;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.endeffector.EndEffectorRollers;
+import frc.robot.subsystems.endeffector.EndEffectorSideUtils;
 import frc.robot.subsystems.endeffector.EndEffectorWrist;
 import frc.robot.subsystems.intake.IntakeRollers;
 import frc.robot.subsystems.intake.IntakeWrist;
@@ -64,19 +66,19 @@ public class RobotContainer {
     private final EagleSwerveTelemetry logger = new EagleSwerveTelemetry(MaxSpeed);
     public final EagleSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Vision vision = new Vision(drivetrain);
-    
+
     private boolean slowModeOn = false;
     private AutoAlignPosition autoAlignPosition = AutoAlignPosition.A;
     private Supplier<Pose2d> autoAlignPositionSupplier = () -> {
         Pose2d reefPosition = ReefPositions.getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue),
                 autoAlignPosition);
-    // reefPosition = new Pose2d(reefPosition.getTranslation(),
-    //                 reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
-        // if (!EndEffectorSideUtils.facingReef(drivetrain.getState().Pose)) {
-        //     System.out.println("[Auto Align] Flipping reef position, not facing reef");
-        //     reefPosition = new Pose2d(reefPosition.getTranslation(),
-        //             reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
-        // }
+        reefPosition = new Pose2d(reefPosition.getTranslation(),
+                reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
+        if (EndEffectorSideUtils.facingReef(drivetrain.getState().Pose)) {
+            System.out.println("[Auto Align] Flipping reef position, not facing reef");
+            reefPosition = new Pose2d(reefPosition.getTranslation(),
+                    reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
+        }
         return reefPosition;
     };
 
@@ -106,7 +108,8 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("ScoreL4", m_superstructure.score());
-        NamedCommands.registerCommand("OuttakeL4", m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS));
+        NamedCommands.registerCommand("OuttakeL4",
+                m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS));
         NamedCommands.registerCommand("StopRollers", m_eeRollers.fullStop());
         NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
         NamedCommands.registerCommand("IntakeCoral", m_superstructure.intake());
@@ -114,7 +117,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("SetDealgaeFalse", Commands.runOnce(() -> m_eeWrist.setDealgae(false)));
         for (AutoAlignPosition pos : AutoAlignConstants.REEF_POSITIONS.keySet()) {
             NamedCommands.registerCommand("AutoAlign" + pos.toString(),
-            drivetrain.alignPID(()->ReefPositions.getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
+                    drivetrain.alignPID(() -> ReefPositions
+                            .getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
         }
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -211,23 +215,22 @@ public class RobotContainer {
         // gpMode switching
         m_buttonBoard.button(5).onTrue(m_superstructure.switchMode().ignoringDisable(true));
 
-
         // Outtake to Score if stuck
         m_leftJoystick.povLeft()
-            .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
-            .onFalse(m_eeRollers.fullStop());
+                .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
+                .onFalse(m_eeRollers.fullStop());
 
         m_leftJoystick.povRight()
-            .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
-            .onFalse(m_eeRollers.fullStop());
-        
+                .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
+                .onFalse(m_eeRollers.fullStop());
+
         m_leftJoystick.povUp()
-            .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
-            .onFalse(m_eeRollers.fullStop());
-        
+                .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
+                .onFalse(m_eeRollers.fullStop());
+
         m_leftJoystick.povDown()
-            .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
-            .onFalse(m_eeRollers.fullStop());
+                .whileTrue(m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS))
+                .onFalse(m_eeRollers.fullStop());
 
         // scoring commands
         m_rightJoystick.trigger().onTrue(m_superstructure.intake()).debounce(0.25);
@@ -242,17 +245,15 @@ public class RobotContainer {
         m_operatorController.povUp().onTrue(m_superstructure.stow());
 
         m_leftJoystick.button(3).and(coralModeSupplier)
-            .whileTrue(Commands.sequence(
-                drivetrain.alignPID(autoAlignPositionSupplier),
-                m_superstructure.score()
-            ));
+                .whileTrue(Commands.sequence(
+                        drivetrain.alignPID(autoAlignPositionSupplier),
+                        m_superstructure.score()));
 
         m_leftJoystick.button(3).and(algaeModeSupplier)
-            .whileTrue(Commands.sequence(
-                new ShootBarge(drivetrain, m_superstructure),
-                m_superstructure.score()
-            ));
-                
+                .whileTrue(Commands.sequence(
+                        new ShootBarge(drivetrain, m_superstructure),
+                        m_superstructure.score()));
+
         m_leftJoystick.button(4).onTrue(
                 drivetrain.applyRequest(() -> {
                     var driveMult = slowModeOn ? DriveConstants.SLOW_MODE_MULT : 1;
@@ -280,17 +281,17 @@ public class RobotContainer {
     }
 
     // public Command driveUntilPoseAndStall(Supplier<Pose2d> pose) {
-    //     return Commands.sequence(
-    //             new PrintCommand("pose: " + pose.toString()),
-    //             new DriveToPosePID(drivetrain, pose.get()),
-    //             new DriveUntilStall(drivetrain));
+    // return Commands.sequence(
+    // new PrintCommand("pose: " + pose.toString()),
+    // new DriveToPosePID(drivetrain, pose.get()),
+    // new DriveUntilStall(drivetrain));
     // }
 
     public Command driveUntilPoseAndStall(Pose2d pose) {
         return Commands.sequence(
                 new PrintCommand("pose: " + pose.toString()),
                 new DriveToPosePID(drivetrain, pose)
-                // new DriveUntilStall(drivetrain)
+        // new DriveUntilStall(drivetrain)
         );
     }
 

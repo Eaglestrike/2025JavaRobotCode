@@ -103,9 +103,9 @@ public class EndEffectorWrist extends SubsystemBase {
 	public Command moveTo(EndEffectorWristPosition position) {
 		return Commands.runOnce(() -> {
 			Pose2d currentPose = m_drive.getState().Pose;
-			// EndEffectorWristSide side = EndEffectorSideUtils.facingReef(currentPose) ? EndEffectorWristSide.FRONT
-			// 		: EndEffectorWristSide.BACK;
-			EndEffectorWristSide side = EndEffectorWristSide.FRONT;
+			EndEffectorWristSide side = EndEffectorSideUtils.facingReef(currentPose) ? EndEffectorWristSide.FRONT
+					: EndEffectorWristSide.BACK;
+			// EndEffectorWristSide side = EndEffectorWristSide.BACK;
 			moveTo(position, side).schedule();
 		});
 	}
@@ -152,7 +152,8 @@ public class EndEffectorWrist extends SubsystemBase {
 				nextPosition = EndEffectorWristPosition.L3_SCORE_ANGLE;
 				break;
 			case L4_PRE_ANGLE:
-				nextPosition = dealgaeWhileScoring ? EndEffectorWristPosition.L4_SCORE_ANGLE : EndEffectorWristPosition.L4_SCORE_NO_DEALGAE_ANGLE;
+				nextPosition = dealgaeWhileScoring ? EndEffectorWristPosition.L4_SCORE_ANGLE
+						: EndEffectorWristPosition.L4_SCORE_NO_DEALGAE_ANGLE;
 				break;
 			case SCORE_PROCESSOR_ANGLE:
 			case SCORE_BARGE_ANGLE:
@@ -202,7 +203,9 @@ public class EndEffectorWrist extends SubsystemBase {
 
 	/**
 	 * Sets whether to dealgae while scoring
-	 * @param dealgae <code>true</code> to dealgae while scoring, <code>false</code> to not
+	 * 
+	 * @param dealgae <code>true</code> to dealgae while scoring, <code>false</code>
+	 *                to not
 	 */
 	public void setDealgae(boolean dealgae) {
 		this.dealgaeWhileScoring = dealgae;
