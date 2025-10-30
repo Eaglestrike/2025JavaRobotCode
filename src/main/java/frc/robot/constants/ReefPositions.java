@@ -24,7 +24,7 @@ public class ReefPositions {
     private static final StructPublisher<Pose2d> alignPosePublisher = autoAlignTable.getStructTopic("Align Pose", Pose2d.struct).publish();
     
     public static Pose2d getReefAlignPose(int tagId, boolean invertOffset) {
-        Pose2d tagPose = VisionConstants.FIELD_TAG_LAYOUT.getTagPose(tagId).get().toPose2d();
+        Pose2d tagPose = VisionConstants.aprilTagFieldLayout.getTagPose(tagId).get().toPose2d();
         tagPosePublisher.set(tagPose);
         Translation2d alignOffsetRel = new Translation2d(
                 -BEHIND_REEF_CENTER.in(Meters),
@@ -39,7 +39,7 @@ public class ReefPositions {
     }
 
     public static Pose2d getAlgaeAlignPose(int tagId) {
-        Pose2d tagPose = VisionConstants.FIELD_TAG_LAYOUT.getTagPose(tagId).get().toPose2d();
+        Pose2d tagPose = VisionConstants.aprilTagFieldLayout.getTagPose(tagId).get().toPose2d();
         Translation2d alignOffsetRel = new Translation2d(
                 -BEHIND_REEF_CENTER.in(Meters), 0);
         Translation2d alignOffset = alignOffsetRel.rotateBy(tagPose.getRotation().minus(new Rotation2d(Math.PI)));

@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.Robot;
+import frc.robot.constants.VisionConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +122,20 @@ public class Camera {
         photonEstimator.addHeadingData(Utils.getCurrentTimeSeconds(), robotPose.getRotation());
 
         for (PhotonPipelineResult targetPose : results) {
+            boolean hasInvalidTag = false;
+            for (var target : targetPose.getTargets()){
+                for(int ignoredTag : VisionConstants.IGNORE_TAGS){
+                    if(target.getFiducialId() == ignoredTag){
+                        hasInvalidTag = true;
+                        break;
+                    }
+                }
+            }
+
+            if(hasInvalidTag){
+                continue;
+            }
+
             optionalEstimPose = photonEstimator.update(targetPose,
                     cam.getCameraMatrix(),
                     cam.getDistCoeffs(),
