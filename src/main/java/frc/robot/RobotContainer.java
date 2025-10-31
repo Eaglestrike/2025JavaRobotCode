@@ -93,7 +93,7 @@ public class RobotContainer {
 
     private final Elevator m_elevator = new Elevator(true);
     private final EndEffectorWrist m_eeWrist = new EndEffectorWrist(true, drivetrain, m_elevator::getPose);
-    private final EndEffectorRollers m_eeRollers = new EndEffectorRollers();
+    private final EndEffectorRollers m_eeRollers = new EndEffectorRollers(drivetrain);
     private final IntakeWrist m_intakeWrist = new IntakeWrist(true);
     private final IntakeRollers m_intakeRollers = new IntakeRollers();
     private final Channel m_channel = new Channel(true);

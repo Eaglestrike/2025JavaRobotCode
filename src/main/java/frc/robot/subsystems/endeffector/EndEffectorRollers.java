@@ -1,17 +1,24 @@
 package frc.robot.subsystems.endeffector;
 
+import com.ctre.phoenix6.controls.VoltageOut;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.constants.*;
+import frc.robot.constants.EndEffectorConstants;
+import frc.robot.subsystems.Drive.EagleSwerveDrivetrain;
 import frc.robot.utils.GenericRollerSubsystem;
 
 public class EndEffectorRollers extends GenericRollerSubsystem {
-    public EndEffectorRollers() {
+    private EagleSwerveDrivetrain drivetrain;
+
+    public EndEffectorRollers(EagleSwerveDrivetrain drivetrain) {
         super(EndEffectorConstants.Rollers.MOTOR_ID, "rio", false);
+        this.drivetrain = drivetrain;
     }
 
     public void runFunc(double voltage) {
-        m_motor.setVoltage(voltage);
+        System.out.println("setting voltage to " + voltage);
+        m_motor.setControl(new VoltageOut(voltage));
     }
 
     public boolean isStalled() {
@@ -31,23 +38,29 @@ public class EndEffectorRollers extends GenericRollerSubsystem {
     }
 
     public Command setManualVoltage(double joystickPosition) {
-		return run(
-				() -> {
-					m_motor.setVoltage(joystickPosition * EndEffectorConstants.Rollers.MAX_VOLTS
-							/ EndEffectorConstants.Rollers.MANUAL_RATIO);
-				});
-	}
+        return run(
+                () -> {
+                    m_motor.setVoltage(joystickPosition * EndEffectorConstants.Rollers.MAX_VOLTS
+                            / EndEffectorConstants.Rollers.MANUAL_RATIO);
+                });
+    }
 
     @Override
     public Command stop() {
         return runOnce(() -> {
-            m_motor.setVoltage(EndEffectorConstants.Rollers.RETAIN_CORAL);
+            if (!EndEffectorSideUtils.facingReef(drivetrain.getState().Pose)) {
+                System.out.println("retain on ee rollers");
+                m_motor.setControl(new VoltageOut(EndEffectorConstants.Rollers.RETAIN_CORAL));
+            } else {
+                m_motor.setControl(new VoltageOut(0));
+            }
         });
     }
 
     public Command fullStop() {
-        return runOnce(()-> {
-            m_motor.setVoltage(0);
+        return runOnce(() -> {
+            System.out.println("full stop");
+            m_motor.setControl(new VoltageOut(0));
         });
     }
 }
