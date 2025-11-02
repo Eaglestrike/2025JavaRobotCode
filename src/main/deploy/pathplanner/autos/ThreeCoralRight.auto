@@ -17,13 +17,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "ElevateL4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
                 }
               },
               {
@@ -48,25 +54,38 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "ReefEFToStation2"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeCoral"
+                  "name": "Stow"
                 }
               },
               {
                 "type": "path",
                 "data": {
+                  "pathName": "ReefEFToStation2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
                   "pathName": "SweepCoral2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoral"
                 }
               }
             ]
@@ -79,13 +98,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "ElevateL4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
                 }
               },
               {
@@ -110,53 +135,59 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "ReefCDToStation2"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "BackFromReefCD"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "IntakeCoral"
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "SweepCoral2"
-                }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Station2ToReefCD"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "ElevateL4"
+                  "pathName": "StraightStation2toReefCD"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AutoAlignC"
+                  "name": "IntakeCoral"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevateL4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlignC"
           }
         },
         {

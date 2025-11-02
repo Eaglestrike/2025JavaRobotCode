@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.465342520254629,
-        "y": 2.326894892939814
+        "x": 3.539763093171296,
+        "y": 2.611183810763888
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.535422994848876,
-        "y": 2.009726629883672
+        "x": 3.6098435677655427,
+        "y": 2.294015547707746
       },
       "isLocked": false,
       "linkedName": "ReefCD"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 56.61777788390452
   },
   "useDefaultConstraints": true
 }
