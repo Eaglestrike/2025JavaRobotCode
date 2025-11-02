@@ -31,7 +31,7 @@ public class EndEffectorSideUtils {
         Pose2d closestReefPose = currentPose.nearest(getCenterPoses());
         double angleError = Math.abs(currentPose.getRotation().minus(closestReefPose.getRotation()).getRadians());
 
-        System.out.println("Angle Error: " + angleError);
+        // System.out.println("Angle Error: " + angleError);
 
         if (angleError < Math.PI / 2.0) {
             return true;

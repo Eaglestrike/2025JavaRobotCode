@@ -69,13 +69,13 @@ public class RobotContainer {
 
     private boolean slowModeOn = false;
     private AutoAlignPosition autoAlignPosition = AutoAlignPosition.A;
-    private Supplier<Pose2d> autoAlignPositionSupplier = () -> {
+    public Supplier<Pose2d> autoAlignPositionSupplier = () -> {
         Pose2d reefPosition = ReefPositions.getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue),
                 autoAlignPosition);
         reefPosition = new Pose2d(reefPosition.getTranslation(),
                 reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
         if (EndEffectorSideUtils.facingReef(drivetrain.getState().Pose)) {
-            System.out.println("[Auto Align] Flipping reef position, not facing reef");
+            // System.out.println("[Auto Align] Flipping reef position, not facing reef");
             reefPosition = new Pose2d(reefPosition.getTranslation(),
                     reefPosition.getRotation().rotateBy(new Rotation2d(Math.PI)));
         }
