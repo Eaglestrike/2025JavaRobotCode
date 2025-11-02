@@ -29,6 +29,7 @@ public class Superstructure extends SubsystemBase {
             IntakeWrist intakeWrist, IntakeRollers intakeRollers, Channel channel, boolean debug) {
         this.m_elevator = elevator;
         this.m_eeWrist = eeWrist;
+        m_eeWrist.setSuperstructure(this);
         this.m_eeRollers = eeRollers;
         this.m_intakeWrist = intakeWrist;
         this.m_intakeRollers = intakeRollers;
@@ -163,7 +164,9 @@ public class Superstructure extends SubsystemBase {
                                 m_elevator.moveTo(ElevatorConstants.L1_CORAL_HEIGHT),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L1_SCORE_ANGLE),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
-                                m_intakeRollers.stop())),
+                                m_eeRollers.stop(),
+                                m_intakeRollers.stop(),
+                                m_channel.stop())),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.PROCESSOR_ALGAE_HEIGHT),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.INTAKE_POSITION),
@@ -179,7 +182,9 @@ public class Superstructure extends SubsystemBase {
                                 m_elevator.moveTo(ElevatorConstants.L2_CORAL_HEIGHT),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L2_PRE_ANGLE),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
-                                m_intakeRollers.stop())),
+                                m_eeRollers.stop(),
+                                m_intakeRollers.stop(),
+                                m_channel.stop())),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L2_ALGAE_HEIGHT),
                                 intakeAlgae(() -> 2),
@@ -195,7 +200,9 @@ public class Superstructure extends SubsystemBase {
                                 m_elevator.moveTo(ElevatorConstants.L3_CORAL_HEIGHT),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L3_PRE_ANGLE),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
-                                m_intakeRollers.stop())),
+                                m_eeRollers.stop(),
+                                m_intakeRollers.stop(),
+                                m_channel.stop())),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.L3_ALGAE_HEIGHT),
                                 intakeAlgae(() -> 3),
@@ -211,7 +218,9 @@ public class Superstructure extends SubsystemBase {
                                 m_elevator.moveTo(ElevatorConstants.L4_CORAL_HEIGHT),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.L4_PRE_ANGLE),
                                 m_intakeWrist.moveTo(IntakeConstants.Wrist.STOW_POSITION),
-                                m_intakeRollers.stop())),
+                                m_eeRollers.stop(),
+                                m_intakeRollers.stop(),
+                                m_channel.stop())),
                         Map.entry(GPMode.Algae, Commands.parallel(
                                 m_elevator.moveTo(ElevatorConstants.BARGE_ALGAE_HEIGHT),
                                 m_eeWrist.moveTo(EndEffectorWristPosition.SCORE_BARGE_PRE_ANGLE),

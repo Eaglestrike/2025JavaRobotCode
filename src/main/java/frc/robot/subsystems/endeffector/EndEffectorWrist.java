@@ -20,6 +20,8 @@ import frc.robot.Robot;
 import frc.robot.ElasticSender.ElasticSender;
 import frc.robot.constants.*;
 import frc.robot.subsystems.Drive.EagleSwerveDrivetrain;
+import frc.robot.subsystems.superstructure.GPMode;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.utils.*;
 
 import static edu.wpi.first.units.Units.Volts;
@@ -47,6 +49,7 @@ public class EndEffectorWrist extends SubsystemBase {
 
 	private boolean dealgaeWhileScoring = true;
 	private ElasticSender m_elastic;
+	private Superstructure m_superstructure;
 	private EndEffectorWristPosition m_currPosition = EndEffectorWristPosition.STOW_ANGLE;
 	private EndEffectorWristSide m_currSide = EndEffectorWristSide.FRONT;
 	TalonFXConfiguration cfg;
@@ -96,6 +99,10 @@ public class EndEffectorWrist extends SubsystemBase {
 		m_motor.getConfigurator().apply(cfg);
 	}
 
+	public void setSuperstructure(Superstructure superstructure) {
+		this.m_superstructure = superstructure;
+	}
+
 	public void ElasticInit() {
 
 	}
@@ -116,7 +123,7 @@ public class EndEffectorWrist extends SubsystemBase {
 					m_currPosition = position;
 					m_currSide = side;
 					double angle = position.getAngle();
-					if (side == EndEffectorWristSide.BACK) {
+					if (side == EndEffectorWristSide.BACK && m_superstructure != null && m_superstructure.getGPMode() == GPMode.Coral) {
 						angle = position.getBackAngle();
 					}
 					m_motor.setControl(m_mmReq.withPosition(angle).withSlot(0));
