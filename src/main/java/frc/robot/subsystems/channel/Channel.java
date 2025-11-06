@@ -1,5 +1,7 @@
 package frc.robot.subsystems.channel;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -19,6 +21,7 @@ import frc.robot.constants.IntakeConstants;
 public class Channel extends SubsystemBase {
     private final TalonFX m_motor = new TalonFX(ChannelConstants.CHANNEL_MOTOR_ID, "rio");
     private LaserCan distanceSensor;
+    private final Queue<Integer> distanceMeasurements = new ArrayDeque<>();
 
     private boolean coralInEndEffector = false;
 
@@ -71,10 +74,27 @@ public class Channel extends SubsystemBase {
         m_sender.put("in channel", coralInEndEffector, false);
         LaserCan.Measurement measurement = distanceSensor.getMeasurement();
         if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-            coralInEndEffector = measurement.distance_mm < ChannelConstants.DISTANCE_SENSOR_THRESH;
-            // m_sender.put("Distance", measurement.distance_mm, false);
+            distanceMeasurements.add(measurement.distance_mm);
+
+            if (distanceMeasurements.size() > ChannelConstants.MEASUREMENT_BUFFER_SIZE) {
+                distanceMeasurements.poll(); // Removes the oldest measurement
+            }
+
+            if (distanceMeasurements.size() == ChannelConstants.MEASUREMENT_BUFFER_SIZE) {
+                boolean allBelowThreshold = true;
+                for (double dist : distanceMeasurements) {
+                    if (dist >= ChannelConstants.DISTANCE_SENSOR_THRESH) {
+                        allBelowThreshold = false;
+                        break;
+                    }
+                }
+                coralInEndEffector = allBelowThreshold;
+            } else {
+                coralInEndEffector = false;
+            }
         } else {
             coralInEndEffector = false;
+            distanceMeasurements.clear();
         }
         if (RobotBase.isSimulation()) {
             coralInEndEffector = true;
