@@ -18,7 +18,7 @@ public class VisionConstants {
     public static final AprilTagFieldLayout aprilTagFieldLayout;
     static {
         try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+            aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
         } catch (Exception e) {
             throw new RuntimeException("Failed to load AprilTag field layout", e);
         }

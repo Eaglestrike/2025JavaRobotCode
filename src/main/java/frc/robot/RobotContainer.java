@@ -248,6 +248,7 @@ public class RobotContainer {
         m_leftJoystick.button(3).and(coralModeSupplier)
                 .whileTrue(Commands.sequence(
                         drivetrain.alignPID(autoAlignPositionSupplier),
+                        new WaitCommand(0.5),
                         m_superstructure.score()));
 
         m_leftJoystick.button(3).and(algaeModeSupplier)

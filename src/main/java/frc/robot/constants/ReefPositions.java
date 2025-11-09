@@ -15,9 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class ReefPositions {
     public static final Distance REEF_CENTER_TO_BRANCH = Inches.of(6.633);
-    // public static final Distance REEF_CENTER_TO_BRANCH = Meters.of(4.01 - 3.54); // FOUND EMPERICALLY, ONLY WORKS FOR LEFT
-    // public static final Distance BEHIND_REEF_CENTER = Inches.of(16);
-    public static final Distance BEHIND_REEF_CENTER = Inches.of(18);
+    public static final Distance BEHIND_REEF_CENTER = Inches.of(16);
+    // public static final Distance BEHIND_REEF_CENTER = Inches.of(18);
 
     private static final NetworkTable autoAlignTable = NetworkTableInstance.getDefault().getTable("Reef Debugging");
     private static final StructPublisher<Pose2d> tagPosePublisher = autoAlignTable.getStructTopic("Tag Pose", Pose2d.struct).publish();
