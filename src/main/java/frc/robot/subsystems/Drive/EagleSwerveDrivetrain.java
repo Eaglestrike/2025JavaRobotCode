@@ -25,8 +25,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -75,9 +77,9 @@ public class EagleSwerveDrivetrain extends TunerSwerveDrivetrain implements Subs
             .withDriveRequestType(DriveRequestType.Velocity)
             .withHeadingPID(4, 0, 0);
     
-    private static double alignKP = 3.0;
+    private static double alignKP = 3.114;
     private static double alignKI = 0.0;
-    private static double alignKD = 0.08;
+    private static double alignKD = 0.114;
 
     private final NetworkTable autoAlignTable = NetworkTableInstance.getDefault().getTable("AutoAlign");
     private final StructPublisher<Pose2d> targetPose = autoAlignTable.getStructTopic("TargetPose", Pose2d.struct)
@@ -404,11 +406,19 @@ public class EagleSwerveDrivetrain extends TunerSwerveDrivetrain implements Subs
                     Pose2d pose = this.getState().Pose;
                     Pose2d target = targetSupplier.get();
                     Transform2d error = pose.minus(target);
-                    return error.getTranslation().getNorm() < 0.1 && 
+                    Translation2d errorTrans = error.getTranslation();
+                    Translation2d unitHeading = new Translation2d(target.getRotation().getCos(), target.getRotation().getSin());
+                    
+                    double dot = errorTrans.getX()*unitHeading.getX() + errorTrans.getY()*unitHeading.getY();  // a · b̂
+                    Translation2d proj = new Translation2d(unitHeading.getX() * dot, unitHeading.getY() * dot);
+                    Translation2d perpendicular = errorTrans.minus(proj);
+
+                    return perpendicular.getNorm() < 0.075 && proj.getNorm() < 0.05 &&
                            Math.abs(error.getRotation().getDegrees()) < 5.0;
                 })
                 .finallyDo(() -> {
                     this.setControl(new SwerveRequest.Idle());
                 });
     }
+
 }
