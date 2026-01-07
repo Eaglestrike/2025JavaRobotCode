@@ -13,6 +13,34 @@
    }
   },
   "poses":{
+   "AlignReefCD":{
+    "x":{
+     "exp":"3.416 m",
+     "val":3.416
+    },
+    "y":{
+     "exp":"2.336 m",
+     "val":2.336
+    },
+    "heading":{
+     "exp":"1.03 rad",
+     "val":1.03
+    }
+   },
+   "IntakeFinalPos":{
+    "x":{
+     "exp":"2.447 m",
+     "val":2.447
+    },
+    "y":{
+     "exp":"1.12 m",
+     "val":1.12
+    },
+    "heading":{
+     "exp":"-0.688 rad",
+     "val":-0.688
+    }
+   },
    "StationEnd":{
     "x":{
      "exp":"0.7383859157562256 m",
@@ -65,8 +93,8 @@
    }
   },
   "mass":{
-   "exp":"135 lbs",
-   "val":61.23496995
+   "exp":"114 lbs",
+   "val":51.70953018
   },
   "inertia":{
    "exp":"6 kg m ^ 2",
@@ -85,8 +113,8 @@
    "val":523.5987755982989
   },
   "tmax":{
-   "exp":"0.7 N * m",
-   "val":0.7
+   "exp":"4.73 N * m",
+   "val":4.73
   },
   "cof":{
    "exp":"1.426",
@@ -94,16 +122,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"17.75 in",
-    "val":0.45085
+    "exp":"14.25 in",
+    "val":0.36195
    },
    "side":{
-    "exp":"17.75 in",
-    "val":0.45085
+    "exp":"14.25 in",
+    "val":0.36195
    },
    "back":{
-    "exp":"17.75 in",
-    "val":0.45085
+    "exp":"14.25 in",
+    "val":0.36195
    }
   },
   "differentialTrackWidth":{

@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import au.grapplerobotics.CanBridge;
 import badgerlog.Dashboard;
 import badgerlog.DashboardConfig;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +30,7 @@ public class Robot extends LoggedRobot {
 
   StructPublisher<Pose2d> aaPosPublisher = NetworkTableInstance.getDefault()
       .getStructTopic("AutoAlignPose", Pose2d.struct).publish();
-
+      
   public Robot() {
     Dashboard.configure(DashboardConfig.defaultConfig);
     CanBridge.runTCP();

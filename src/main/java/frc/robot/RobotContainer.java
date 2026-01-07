@@ -17,6 +17,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -66,6 +68,8 @@ public class RobotContainer {
     private final EagleSwerveTelemetry logger = new EagleSwerveTelemetry(MaxSpeed);
     public final EagleSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Vision vision = new Vision(drivetrain);
+    private final AutoFactory autoFactory;
+
 
     private boolean slowModeOn = false;
     private AutoAlignPosition autoAlignPosition = AutoAlignPosition.A;
@@ -90,6 +94,7 @@ public class RobotContainer {
 
     // auto
     private final SendableChooser<Command> autoChooser;
+    private final AutoChooser choreoAutoChooser;
 
     private final Elevator m_elevator = new Elevator(true);
     private final EndEffectorRollers m_eeRollers = new EndEffectorRollers(drivetrain);
@@ -108,16 +113,37 @@ public class RobotContainer {
     private BooleanSupplier coralModeSupplier = () -> m_superstructure.getGPMode() == GPMode.Coral;
 
     public RobotContainer() {
+        autoFactory = new AutoFactory(
+            drivetrain::getPose, // A function that returns the current robot pose
+            drivetrain::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            drivetrain::applyRequest, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            drivetrain // The drive subsystem
+        );
+
+        choreoAutoChooser = new AutoChooser();
+        SmartDashboard.putData("Choreo Auto Chooser", choreoAutoChooser);
+
         NamedCommands.registerCommand("ScoreL4", m_superstructure.score());
+        autoFactory.bind("ScoreL4", m_superstructure.score());
+        
         NamedCommands.registerCommand("OuttakeL4",
                 m_eeRollers.run(EndEffectorConstants.Rollers.OUTTAKE_L4_CORAL_VOLTS));
         NamedCommands.registerCommand("StopRollers", m_eeRollers.fullStop());
+        
         NamedCommands.registerCommand("ElevateL4", m_superstructure.moveL4());
+        autoFactory.bind("ElevateL4", m_superstructure.moveL4());
+
         NamedCommands.registerCommand("IntakeCoral", m_superstructure.intake());
+        autoFactory.bind("IntakeCoral", m_superstructure.intake());
+
         NamedCommands.registerCommand("Stow", m_superstructure.stow());
         NamedCommands.registerCommand("SetDealgaeFalse", Commands.runOnce(() -> m_eeWrist.setDealgae(false)));
         for (AutoAlignPosition pos : AutoAlignConstants.REEF_POSITIONS.keySet()) {
             NamedCommands.registerCommand("AutoAlign" + pos.toString(),
+                    drivetrain.alignPID(() -> ReefPositions
+                            .getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
+            autoFactory.bind("AutoAlign" + pos.toString(),
                     drivetrain.alignPID(() -> ReefPositions
                             .getReefPosition(DriverStation.getAlliance().orElse(Alliance.Blue), pos)));
         }
@@ -268,6 +294,10 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
+        // String autoName = autoChooser.getSelected().getName();
+        // if(autoName.toLowerCase().contains("choreo")) {
+        //     return autoFactory.trajectoryCmd(autoName);
+        // }
         return autoChooser.getSelected();
     }
 

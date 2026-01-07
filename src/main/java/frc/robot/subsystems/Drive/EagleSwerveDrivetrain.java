@@ -387,6 +387,10 @@ public class EagleSwerveDrivetrain extends TunerSwerveDrivetrain implements Subs
                 visionMeasurementStdDevs);
     }
 
+    public Pose2d getPose() {
+        return this.getState().Pose;
+    }
+    
     public Command alignPID(Supplier<Pose2d> targetSupplier) {
         return this.run(() -> {
             Pose2d pose = this.getState().Pose;
